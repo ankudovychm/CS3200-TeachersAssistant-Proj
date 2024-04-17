@@ -168,3 +168,48 @@ def add_reply():
     cursor.execute(query)
     db.get_db().commit()
     return 'Success!'
+
+# get the discussion board post for last route for Alex
+# and then on comments be able to post comment
+@Students.route('/messagecontent', methods=['GET'])
+def get_message():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Chats')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+
+@Students.route('/messagesent', methods=['POST'])
+def add_message_reply():
+# collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+    #extracting the variable
+    chatID = the_data['ChatID']
+    senderID = the_data['SenderID']
+    recipientID = the_data['RecipientID']
+    time_sent_chat = the_data['TimeSent']
+    reply = the_data['ChatReplyText']
+
+    # Constructing the query
+    query = 'insert into DiscussionPostAnswers (ChatID, SenderID, RecipientID, TimeSent, ChatReplyText) values ("'
+    query += chatID + '", "'
+    query += senderID + '", "'
+    query += recipientID + '", "'
+    query += time_sent_chat + '", '
+    query += reply + ')'
+    current_app.logger.info(query)
+
+
+    #     # executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    return 'Success, reply to message sent!'
