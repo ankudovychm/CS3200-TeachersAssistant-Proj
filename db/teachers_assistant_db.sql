@@ -18,7 +18,9 @@ flush privileges;
 -- change it here too. 
 use teachers_assistant_db;
 
--- Put your DDL 
+
+
+-- Put your DDL
 -- Creates Employees Table
 CREATE TABLE IF NOT EXISTS Employees(
     EmployeeID int AUTO_INCREMENT PRIMARY KEY,
@@ -38,16 +40,6 @@ CREATE TABLE IF NOT EXISTS EmployeesEmails(
 );
 
 
--- Creates DayTimeWorked Table
-CREATE TABLE IF NOT EXISTS DayTimeWorked(
-    Day varchar(10),
-    Timeslot varchar(40),
-    ScheduleID int NOT NULL,
-    CONSTRAINT DTW_pk
-        PRIMARY KEY (Day,Timeslot,ScheduleID),
-    CONSTRAINT  DTW_pk_01
-        FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID) ON UPDATE CASCADE
-);
 
 -- Creates Students Table
 CREATE TABLE IF NOT EXISTS Students(
@@ -109,10 +101,21 @@ CREATE TABLE IF NOT EXISTS Schedule(
     EmployeeID int NOT NULL,
     CONSTRAINT S_fk_01
         FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE,
-    CRN int NOT NULL, 
+    CRN int NOT NULL,
     CONSTRAINT S_fk_02
         FOREIGN KEY (CRN) REFERENCES CourseSections(CRN) ON UPDATE CASCADE,
     HoursWorked int DEFAULT 0
+);
+
+-- Creates DayTimeWorked Table
+CREATE TABLE IF NOT EXISTS DayTimeWorked(
+    Day varchar(10),
+    Timeslot varchar(40),
+    ScheduleID int NOT NULL,
+    CONSTRAINT DTW_pk
+        PRIMARY KEY (Day,Timeslot,ScheduleID),
+    CONSTRAINT  DTW_pk_01
+        FOREIGN KEY (ScheduleID) REFERENCES Schedule(ScheduleID) ON UPDATE CASCADE
 );
 
 
@@ -152,7 +155,7 @@ CREATE TABLE IF NOT EXISTS Submissions(
     CONSTRAINT Sub_fk_02
         FOREIGN KEY (SubmitBy) REFERENCES Students(StudentID) ON UPDATE CASCADE,
     GradedBy int,
-    CONSTRAINT Sub_fk_02
+    CONSTRAINT Sub_fk_03
         FOREIGN KEY (GradedBy) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE
 );
 
@@ -265,7 +268,7 @@ CREATE TABLE IF NOT EXISTS DiscussionPostAnswers(
 );
 
 
--- Add sample data. 
+-- Add sample data.
 -- Insert dummy data into Employees table
 INSERT INTO Employees (FirstName, LastName, EmployeeTitle)
 VALUES
@@ -283,21 +286,6 @@ VALUES
     (3, 'michael.johnson@example.com'),
     (4, 'rachel.davis@example.com');
 
--- Insert dummy data into Schedule table
-INSERT INTO Schedule (EmployeeID, HoursWorked)
-VALUES
-    (1, 40),
-    (2, 35),
-    (3, 20),
-    (4, 20);
-
--- Insert dummy data into DayTimeWorked table
-INSERT INTO DayTimeWorked (Day, Timeslot, ScheduleID)
-VALUES
-    ('Monday', '9:00 AM - 1:00 PM', 1),
-    ('Tuesday', '10:00 AM - 2:00 PM', 2),
-    ('Wednesday', '1:00 PM - 5:00 PM', 3),
-    ('Thursday', '2:00 PM - 6:00 PM', 4);
 
 -- Insert dummy data into Students table
 INSERT INTO Students (FirstName, LastName)
@@ -470,3 +458,19 @@ VALUES
     (1, 1, '2024-04-02 10:00:00', 'Feel free to ask your questions here and I''ll do my best to help.'),
     (2, 3, '2024-04-03 11:00:00', 'Let''s break down the problem step by step.'),
     (3, 2, '2024-04-03 12:00:00', 'I suggest creating a study schedule and focusing on the key concepts.');
+
+-- Insert dummy data into Schedule table
+INSERT INTO Schedule (EmployeeID, HoursWorked, CRN)
+VALUES
+    (1, 40,1),
+    (2, 35,1),
+    (3, 20,1),
+    (4, 20,1);
+
+-- Insert dummy data into DayTimeWorked table
+INSERT INTO DayTimeWorked (Day, Timeslot, ScheduleID)
+VALUES
+    ('Monday', '9:00 AM - 1:00 PM', 1),
+    ('Tuesday', '10:00 AM - 2:00 PM', 2),
+    ('Wednesday', '1:00 PM - 5:00 PM', 3),
+    ('Thursday', '2:00 PM - 6:00 PM', 4);
