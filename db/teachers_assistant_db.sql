@@ -143,6 +143,9 @@ CREATE TABLE IF NOT EXISTS Submissions(
     GradedOn DATETIME,
     TurnedIn DATETIME,
     RegradeRequestStatus boolean default False,
+    SubmitBy int,
+    CONSTRAINT Sub_fk_02
+        FOREIGN KEY (SubmitBy) REFERENCES Students(StudentID) ON UPDATE CASCADE,
     GradedBy int,
     CONSTRAINT Sub_fk_02
         FOREIGN KEY (GradedBy) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE
@@ -183,9 +186,6 @@ CREATE TABLE IF NOT EXISTS FeedbackSurveys(
     CONSTRAINT feedback_fk_01
         FOREIGN KEY (ReviewerID) REFERENCES Students(StudentID) ON UPDATE CASCADE,
     Status boolean,
-    ReceivedBy int Not null,
-    CONSTRAINT feedback_fk_02
-        FOREIGN KEY (ReceivedBy) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE,
     CRN int Not NULL,
       CONSTRAINT feedback_fk_03
         FOREIGN KEY (CRN) REFERENCES CourseSections(CRN) ON UPDATE CASCADE
@@ -386,11 +386,11 @@ VALUES
     ('2024-04-30', '2024-04-15', 3);
 
 -- Insert dummy data into Submissions table
-INSERT INTO Submissions (AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, GradedBy)
+INSERT INTO Submissions (AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, SubmitBy ,GradedBy)
 VALUES
-    (1, 95, '2024-04-30', '2024-04-28', FALSE, 1),
-    (2, NULL, NULL, '2024-04-28', FALSE, 2),
-    (3, 85, '2024-04-30', '2024-04-28', FALSE, 3);
+    (1, 95, '2024-04-30', '2024-04-28', FALSE, 1,1),
+    (2, NULL, NULL, '2024-04-28', FALSE, 1, 2),
+    (3, 85, '2024-04-30', '2024-04-28', FALSE, 1,3);
 
 -- Insert dummy data into SubmissionsComments table
 INSERT INTO SubmissionsComments (CommentText, SubmissionID)
@@ -424,11 +424,11 @@ VALUES
     ('2024-01-25', TRUE, 85, 20, 2, 2);
 
 -- Insert dummy data into FeedbackSurveys table
-INSERT INTO FeedbackSurveys (Feedback, Date, ReviewerID, Status, ReceivedBy, CRN)
+INSERT INTO FeedbackSurveys (Feedback, Date, ReviewerID, Status, CRN)
 VALUES
-    ('Great course!', '2024-04-30', 1, TRUE, 1, 1),
-    ('Excellent instructor!', '2024-04-30', 2, TRUE, 2, 2),
-    ('Could use improvement.', '2024-04-30', 3, FALSE, 3, 3);
+    ('Great course!', '2024-04-30', 1, TRUE,  1),
+    ('Excellent instructor!', '2024-04-30', 2, TRUE,  2),
+    ('Could use improvement.', '2024-04-30', 3, FALSE,  3);
 
 -- Insert dummy data into Chats table
 INSERT INTO Chats (Message, SenderID, RecipientID, TimeSent)
