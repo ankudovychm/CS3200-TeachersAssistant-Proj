@@ -37,14 +37,6 @@ CREATE TABLE IF NOT EXISTS EmployeesEmails(
         PRIMARY KEY (EmployeeID,Email)
 );
 
--- Creates Schedule Table
-CREATE TABLE IF NOT EXISTS Schedule(
-    ScheduleID int AUTO_INCREMENT PRIMARY KEY,
-    EmployeeID int NOT NULL,
-    CONSTRAINT S_fk_01
-        FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE,
-    HoursWorked int DEFAULT 0
-);
 
 -- Creates DayTimeWorked Table
 CREATE TABLE IF NOT EXISTS DayTimeWorked(
@@ -110,6 +102,19 @@ CREATE TABLE IF NOT EXISTS CourseSections(
     Year int not null,
     Semester varchar(10) not null
 );
+
+-- Creates Schedule Table
+CREATE TABLE IF NOT EXISTS Schedule(
+    ScheduleID int AUTO_INCREMENT PRIMARY KEY,
+    EmployeeID int NOT NULL,
+    CONSTRAINT S_fk_01
+        FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID) ON UPDATE CASCADE,
+    CRN int NOT NULL, 
+    CONSTRAINT S_fk_02
+        FOREIGN KEY (CRN) REFERENCES CourseSections(CRN) ON UPDATE CASCADE,
+    HoursWorked int DEFAULT 0
+);
+
 
 -- Create Instructors Table
 CREATE TABLE IF NOT EXISTS Instructors(
