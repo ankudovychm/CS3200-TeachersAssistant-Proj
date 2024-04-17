@@ -73,6 +73,20 @@ def get_discussion_content():
     the_response.mimetype = 'application/json'
     return the_response
 
+# get route to see all discussion board answers
+@Students.route('/DiscussionBoardAnswers', methods=['GET'])
+def get_discussion_replies():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM DiscussionPostAnswers')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 @Students.route('/discussionboard', methods=['POST'])
 def add_reply():
