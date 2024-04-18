@@ -1,7 +1,7 @@
 # Some set up for the application 
 
 from flask import Flask
-from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL # type: ignore
 
 # create a MySQL object that we will use in other parts of the API
 db = MySQL()
