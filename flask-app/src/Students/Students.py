@@ -123,11 +123,9 @@ def update_regradeRequests():
     
     #extracting the variable
     grade = the_data['Grade']
-    graded_by = the_data['GradedBy']
-    graded_on = parse_http_date(the_data['GradedOn'])
     submissionid = the_data['SubmissionID']
-    query = 'UPDATE Submissions SET Grade = %s, GradedBy = %s, GradedOn = %s WHERE SubmissionID = %s '
-    data = (grade, graded_by, graded_on, submissionid)
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
+    data = (grade, submissionid)
 
     # executing and committing the insert statement 
     cursor = db.get_db().cursor()
