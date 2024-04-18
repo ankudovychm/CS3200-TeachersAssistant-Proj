@@ -7,6 +7,8 @@ This repo contains the setup for the world's next learning management superapp, 
 2. A Python Flask container to implement a REST API
 3. A Local AppSmith Server for the presentation 
 
+## Getting set up
+
 Before starting, ensure that Docker Desktop is installed.
 
 To start this program:
@@ -15,8 +17,12 @@ To start this program:
 * Start the containers with `docker compose up` or `docker compose up -d` to run in detached mode so the containers run in the background.
 
 Additionally, every user will need to do the following:
-* Create a file named db_root_password.txt in the secrets/ folder and put inside of it the root password for MySQL.
-* Create a file named db_password.txt in the secrets/ folder and put inside of it the password you want to use for the a non-root user named webapp.
+* Create a file named `db_root_password.txt` in the `secrets/ folder` and put inside of it the root password for MySQL.
+* Create a file named `db_password.txt` in the `secrets/` folder and put inside of it the password you want to use for the a non-root user named webapp.
+
+Now, you should be all set! We hope you enjoy using Teacher's Assistant!
+
+## Contributors
 
 This app was created as the final project for CS3200: Database Design at Northeastern University. The final stage project was completed by: 
 * Mikhail Ankudovych 
