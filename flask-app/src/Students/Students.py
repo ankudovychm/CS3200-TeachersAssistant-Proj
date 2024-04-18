@@ -76,27 +76,7 @@ def update_regradeRequests():
     db.get_db().commit()
     return 'grade updated!'
 
-## USER STORY 4 ## GRADE UNGRADED SUBMISSIONS
-@Students.route('/GradeAsubmission', methods=['PUT'])
-def grade_submission():
-    the_data = request.json
-    current_app.logger.info(the_data)
-    
-    #extracting the variable
-    grade = the_data['Grade']
-    submissionid = the_data['SubmissionID']
-    assignmentid = the_data['AssignmentID']
-    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s AND AssignmentID = %s'
-    data = (grade, submissionid, assignmentid)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    r =cursor.execute(query, data)
-    db.get_db().commit()
-    return 'grade updated!'
-
-
-## USER STORY _ ## POST ON DISUCCION BOARD 
+## USER STORY 4 ## POST ON DISUCCION BOARD 
 # get the discussion board post for last route for Alex
 # and then on comments be able to post comment
 @Students.route('/DiscussionBoardContent', methods=['GET'])
@@ -127,33 +107,6 @@ def get_discussion_replies():
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
-
-# @Students.route('/discussionboard', methods=['POST'])
-# def add_reply():
-# # collecting data from the request object
-#     the_data = request.json
-#     current_app.logger.info(the_data)
-#     #extracting the variable
-#     post_id = the_data['PostID']
-#     employee_id = the_data['EmployeeID']
-#     #time_posted = the_data['TimePosted']
-#     dp_answer = the_data['DiscussionPostAnswer']
-#     # dp_id = the_data['DPAnswerID']
-
-#     # Constructing the query
-#     # query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, TimePosted, DiscussionPostAnswer, DPAnswerID) values ("'
-#     query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer) values ("'
-#     query += post_id + '", "'
-#     # query += employee_id + '", "'
-#     query += employee_id + '", '
-#     query += dp_answer + ')'
-#     current_app.logger.info(query)
-#     # executing and committing the insert statement
-#     cursor = db.get_db().cursor()
-#     cursor.execute(query)
-#     db.get_db().commit()
-#     return 'Discussion Post reply posted!'
-
 
 @Students.route('/discussionboard', methods=['POST'])
 def add_reply():
@@ -187,6 +140,24 @@ def add_reply():
 
     return 'Discussion Post reply posted!'
 
+## USER STORY 5 ## GRADE UNGRADED SUBMISSIONS
+@Students.route('/GradeAsubmission', methods=['PUT'])
+def grade_submission():
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    grade = the_data['Grade']
+    submissionid = the_data['SubmissionID']
+    assignmentid = the_data['AssignmentID']
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s AND AssignmentID = %s'
+    data = (grade, submissionid, assignmentid)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    r =cursor.execute(query, data)
+    db.get_db().commit()
+    return 'grade updated!'
 
 
 ###### STUD ###### 
