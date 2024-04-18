@@ -96,25 +96,23 @@ def add_reply():
     #extracting the variable
     post_id = the_data['PostID']
     employee_id = the_data['EmployeeID']
-    time_posted = the_data['TimePosted']
+    #time_posted = the_data['TimePosted']
     dp_answer = the_data['DiscussionPostAnswer']
-    dp_id = the_data['DPAnswerID']
+    # dp_id = the_data['DPAnswerID']
 
     # Constructing the query
-    query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, TimePosted, DiscussionPostAnswer, DPAnswerID) values ("'
+    # query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, TimePosted, DiscussionPostAnswer, DPAnswerID) values ("'
+    query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer) values ("'
     query += post_id + '", "'
-    query += employee_id + '", "'
-    query += time_posted + '", "'
-    query += dp_answer + '", '
-    query += dp_id + ')'
+    # query += employee_id + '", "'
+    query += employee_id + '", '
+    query += dp_answer + ')'
     current_app.logger.info(query)
-
-
-    #     # executing and committing the insert statement
+    # executing and committing the insert statement
     cursor = db.get_db().cursor()
     cursor.execute(query)
     db.get_db().commit()
-    return 'Success!'
+    return 'Discussion Post reply posted!'
 
 ## USER STORY 4 ## UPDATE GRADES
 # route 4: update grade for submissions 
