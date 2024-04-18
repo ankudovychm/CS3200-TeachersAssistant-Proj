@@ -7,16 +7,43 @@ import json
 from datetime import datetime
 import pytz
 from src import db
-
+from datetime import date
 
 Students = Blueprint('Students', __name__)
 
 ###### PROF ###### 
 
 ## USER STORY 1 ## REACH OUT TO TAS
+# Get all customers from the DB
+@Students.route('/TAS', methods=['GET'])
+def get_TAS():
+    cursor = db.get_db().cursor()
+    cursor.execute('select * from Employees NATURAL JOIN EmployeesEmails where EmployeeTitle = "Teaching Assistant"')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 ## USER STORY 2 ## TA SCHEDULE
 # returns oh schedule
+@Students.route('/OfficeHours', methods=['GET'])
+def get_schedule_all():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Schedule s JOIN DayTimeWorked dtw ON dtw.ScheduleID = s.ScheduleID JOIN Employees e ON e.EmployeeID = s.EmployeeID WHERE e.EmployeeTitle ="Teaching Assistant"')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
 ## USER STORY 3 ## SEE HOURS OF HIS TAS
 
@@ -104,15 +131,15 @@ def add_reply():
 
 ## USER STORY 4 ## UPDATE GRADES
 # route 4: update grade for submissions 
-@Students.route('/Gradesupdate', methods=['PUT'])
-def update_regradeRequests():
+@Students.route('/Gradesupdate/<ID>', methods=['PUT'])
+def update_regradeRequests(ID):
     the_data = request.json
     current_app.logger.info(the_data)
     
     #extracting the variable
     grade = the_data['Grade']
-    graded_by = the_data['GradedBy']
-    graded_on = parse_http_date(the_data['GradedOn'])
+    graded_by = ID
+    graded_on = date.today()
     submissionid = the_data['SubmissionID']
     query = 'UPDATE Submissions SET Grade = %s, GradedBy = %s, GradedOn = %s WHERE SubmissionID = %s '
     data = (grade, graded_by, graded_on, submissionid)
@@ -141,6 +168,7 @@ def get_AllOHschedule():
     the_response.mimetype = 'application/json'
     return the_response
 
+
 ## USER STORY 2 ## FEEDBACK SURVEYS
 @Students.route('/feedback_post/<ID>', methods=['PUT'])
 def add_feedbackreply(ID):
@@ -151,7 +179,7 @@ def add_feedbackreply(ID):
     Feedback = the_data['Feedback']
     CRN = the_data['CRN']
 
-    from datetime import date
+    
 
     # Constructing the query
     query = 'INSERT INTO FeedbackSurveys (Feedback, Date, ReviewerID, Status, CRN) values ("'
@@ -181,7 +209,7 @@ def add_feedbackreply(ID):
 @Students.route('/AssignmentsStud/<ID>', methods=['GET'])
 def AssignmentsStud(ID):
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Submissions Natural JOIN SubmissionsComments')
+    cursor.execute('SELECT * FROM Assignments Natural JOIN Submissions Natural JOIN SubmissionsComments where SubmitBy = {0}'.format(ID))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -198,7 +226,7 @@ def AssignmentsStud(ID):
 @Students.route('/Enrollement', methods=['GET'])
 def get_enrollement_content():
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Enrollements e JOIN Students s ON e.StudentID = s.StudentID')
+    cursor.execute('SELECT * FROM Enrollements e JOIN Students s ON e.StudentID = s.StudentID JOIN AcademicCoordinators ac on ac.CoordinatorID = e.CoordinatorID')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -226,7 +254,6 @@ def get_FeedbackSurveys_content():
 
 
 ## USER STORY 3 ## view all grades 
-## USER STORY 2 ## review student feedback on courses
 @Students.route('/AllGrades', methods=['GET'])
 def get_AllGrades_content():
     cursor = db.get_db().cursor()
@@ -242,12 +269,67 @@ def get_AllGrades_content():
     return the_response  
 
 
-## USER STORY 4 ## Enroll a student in a course 
+## USER STORY 4 ## 
+
+# Create new enrollement POST 
+@Students.route('/enrollementNew/<ID>', methods=['POST'])
+def enrollementNew(ID):
+# collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    EnrollDate = str(date.today())
+    StudentID = the_data['StudentID']
+    CoordinatorID = ID
+    CRN = the_data['CRN']
+
+    # Constructing the query
+    query = 'insert into Enrollements (EnrollDate, StudentID, CoordinatorID, CRN) values ("'
+    query += EnrollDate + '", '
+    query += StudentID + ', '
+    query += CoordinatorID   + ', '
+    query += CRN       + ')'
+    
+    
+    current_app.logger.info(query)
+
+
+    #     # executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    return 'Success!'
+
+
+# Get rid of enrollement DELETE 
+@Students.route("/enrollementDELETE", methods=["DELETE"])
+def enrollementDELETE():
+    # collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    EnrollID = the_data["EnrollID"]
+
+    # Constructing the query
+    query = 'delete from Enrollements where EnrollmentID='
+    query += EnrollID
+    
+    
+    current_app.logger.info(query)
+
+
+    #     # executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    return 'Success!'
+    
 
 
 
-
-# Get all customers from the DB
+# Get all students from the DB
 @Students.route('/students', methods=['GET'])
 def get_students():
     cursor = db.get_db().cursor()
