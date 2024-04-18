@@ -56,7 +56,46 @@ def get_schedule(ID):
     the_response.mimetype = 'application/json'
     return the_response
 
-## USER STORY 3 ## POST ON DISUCCION BOARD 
+
+## USER STORY 3 ## UPDATE GRADES
+# route 4: update grade for submissions 
+@Students.route('/Gradesupdate', methods=['PUT'])
+def update_regradeRequests():
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    grade = the_data['Grade']
+    submissionid = the_data['SubmissionID']
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
+    data = (grade, submissionid)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    r =cursor.execute(query, data)
+    db.get_db().commit()
+    return 'grade updated!'
+
+## USER STORY 4 ## GRADE UNGRADED SUBMISSIONS
+@Students.route('/GradeAsubmission', methods=['PUT'])
+def grade_submission():
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    grade = the_data['Grade']
+    submissionid = the_data['SubmissionID']
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
+    data = (grade, submissionid)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    r =cursor.execute(query, data)
+    db.get_db().commit()
+    return 'grade updated!'
+
+
+## USER STORY _ ## POST ON DISUCCION BOARD 
 # get the discussion board post for last route for Alex
 # and then on comments be able to post comment
 @Students.route('/DiscussionBoardContent', methods=['GET'])
@@ -113,25 +152,6 @@ def add_reply():
     cursor.execute(query)
     db.get_db().commit()
     return 'Discussion Post reply posted!'
-
-## USER STORY 4 ## UPDATE GRADES
-# route 4: update grade for submissions 
-@Students.route('/Gradesupdate', methods=['PUT'])
-def update_regradeRequests():
-    the_data = request.json
-    current_app.logger.info(the_data)
-    
-    #extracting the variable
-    grade = the_data['Grade']
-    submissionid = the_data['SubmissionID']
-    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
-    data = (grade, submissionid)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    r =cursor.execute(query, data)
-    db.get_db().commit()
-    return 'grade updated!'
 
 
 ###### STUD ###### 
