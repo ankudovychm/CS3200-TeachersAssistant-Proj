@@ -110,7 +110,7 @@ def AssignmentsStud(ID):
     Gets all assignments and submissions for a particular student
     """
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Assignments Natural JOIN Submissions Natural JOIN SubmissionsComments where SubmitBy = {0}'.format(ID))
+    cursor.execute('SELECT * FROM Assignments Natural JOIN Submissions s LEFT OUTER JOIN SubmissionsComments sc ON s.SubmissionID = sc.SubmissionID where SubmitBy = {0}'.format(ID))
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
