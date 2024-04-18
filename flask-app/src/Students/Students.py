@@ -24,7 +24,7 @@ Students = Blueprint('Students', __name__)
 
 ###### TA ###### 
 
-## USER STORY 1 ## UNGRADED ASSIGNMENTS
+## USER STORY 1 ## SEE UNGRADED ASSIGNMENTS AND GRADE UNGRADED SUBMISSIONS
 # returns all submissions that have not been graded yet
 @Students.route('/Submissions', methods=['GET'])
 def get_assignments():
@@ -40,6 +40,24 @@ def get_assignments():
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+
+@Students.route('/GradeAsubmission', methods=['PUT'])
+def grade_submission():
+    the_data = request.json
+    current_app.logger.info(the_data)
+    
+    #extracting the variable
+    grade = the_data['Grade']
+    submissionid = the_data['SubmissionID']
+    assignmentid = the_data['AssignmentID']
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s AND AssignmentID = %s'
+    data = (grade, submissionid, assignmentid)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    r =cursor.execute(query, data)
+    db.get_db().commit()
+    return 'grade updated!'
 
 ## USER STORY 2 ## THEIR OFFICE HOUR SCHEDULE
 @Students.route('/OfficeHours', methods=['GET'])
@@ -59,6 +77,35 @@ def get_schedule():
 
 ## USER STORY 3 ## UPDATE GRADES
 # route 4: update grade for submissions 
+@Students.route('/Grades', methods=['GET'])
+def get_grades():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM Submissions')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+def parse_http_date(http_date):
+    if http_date is None:
+        # handle the case where no date is provided 
+        return None 
+    try:
+        # Parse HTTP date format to datetime object
+        dt = datetime.strptime(http_date, '%a, %d %b %Y %H:%M:%S GMT')
+        # Convert to a timezone-aware datetime object in UTC
+        dt = dt.replace(tzinfo=pytz.utc)
+        # Format for MySQL
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+    except ValueError as e:
+        raise ValueError(f"Invalid date format: {http_date}")
+    
+# now i can use put route 
 @Students.route('/Gradesupdate', methods=['PUT'])
 def update_regradeRequests():
     the_data = request.json
@@ -121,13 +168,12 @@ def add_reply():
     from datetime import date
     time_posted = str(date.today())
 
-    # Constructing a secure query using placeholders
+    # Constructing a query 
     query = """
     INSERT INTO DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer, TimePosted)
     VALUES (%s, %s, %s, %s)
     """
-
-    # Parameters to be securely inserted into the query
+    # Parameters to be inserted into the query
     params = (post_id, employee_id, dp_answer, time_posted)
 
     # Logging the intended operation for debug
@@ -135,29 +181,11 @@ def add_reply():
 
     # Executing and committing the insert statement
     cursor = db.get_db().cursor()
-    cursor.execute(query, params)  # Safe parameter insertion
+    cursor.execute(query, params)  
     db.get_db().commit()
 
     return 'Discussion Post reply posted!'
 
-## USER STORY 5 ## GRADE UNGRADED SUBMISSIONS
-@Students.route('/GradeAsubmission', methods=['PUT'])
-def grade_submission():
-    the_data = request.json
-    current_app.logger.info(the_data)
-    
-    #extracting the variable
-    grade = the_data['Grade']
-    submissionid = the_data['SubmissionID']
-    assignmentid = the_data['AssignmentID']
-    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s AND AssignmentID = %s'
-    data = (grade, submissionid, assignmentid)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    r =cursor.execute(query, data)
-    db.get_db().commit()
-    return 'grade updated!'
 
 
 ###### STUD ###### 
@@ -319,30 +347,3 @@ def get_customer(ID):
 
 
 
-@Students.route('/Grades', methods=['GET'])
-def get_grades():
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Submissions')
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
-
-def parse_http_date(http_date):
-    if http_date is None:
-        # handle the case where no date is provided 
-        return None 
-    try:
-        # Parse HTTP date format to datetime object
-        dt = datetime.strptime(http_date, '%a, %d %b %Y %H:%M:%S GMT')
-        # Convert to a timezone-aware datetime object in UTC
-        dt = dt.replace(tzinfo=pytz.utc)
-        # Format for MySQL
-        return dt.strftime('%Y-%m-%d %H:%M:%S')
-    except ValueError as e:
-        raise ValueError(f"Invalid date format: {http_date}")
