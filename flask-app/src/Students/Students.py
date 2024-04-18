@@ -42,10 +42,10 @@ def get_assignments():
     return the_response
 
 ## USER STORY 2 ## THEIR OFFICE HOUR SCHEDULE
-@Students.route('/OfficeHours/<ID>', methods=['GET'])
-def get_schedule(ID):
+@Students.route('/OfficeHours', methods=['GET'])
+def get_schedule():
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Schedule s JOIN DayTimeWorked dtw ON dtw.ScheduleID = s.ScheduleID JOIN Employees e ON e.EmployeeID = s.EmployeeID WHERE s.EmployeeID ={0}'.format(ID))
+    cursor.execute('SELECT * FROM Schedule s JOIN DayTimeWorked dtw ON dtw.ScheduleID = s.ScheduleID JOIN Employees e ON e.EmployeeID = s.EmployeeID')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
