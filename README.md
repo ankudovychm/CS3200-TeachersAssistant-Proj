@@ -36,3 +36,5 @@ This app was created as the final project for CS3200: Database Design at Northea
 * Mikhail Ankudovych 
 * Sophie Sawyers 
 * Laura Boelsterli
+
+The video demo of this project can be found [here.](https://drive.google.com/file/d/1YCqb3WO01oLnlmY4ba0JgjfE-EakmR_Q/view?usp=sharing)
