@@ -765,6 +765,7 @@ insert into Assignments (AssignmentID, DueDate, DateAssigned, CourseCRN) values 
 
 -- Insert dummy data into Submissions table
 insert into Submissions (SubmissionID, AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, SubmitBy, GradedBy) values (1, '28', 94, '2024-06-24', '2024-04-25', true, '33', '50');
+
 insert into Submissions (SubmissionID, AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, SubmitBy, GradedBy) values (2, '45', 38, '2024-06-27', '2024-04-22', true, '28', '44');
 insert into Submissions (SubmissionID, AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, SubmitBy, GradedBy) values (3, '25', 56, '2024-06-27', '2024-04-22', true, '10', '5');
 insert into Submissions (SubmissionID, AssignmentID, Grade, GradedOn, TurnedIn, RegradeRequestStatus, SubmitBy, GradedBy) values (4, '6', 3, '2024-06-24', '2024-04-25', false, '43', '27');
