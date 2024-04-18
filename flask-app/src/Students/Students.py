@@ -128,31 +128,65 @@ def get_discussion_replies():
     the_response.mimetype = 'application/json'
     return the_response
 
+# @Students.route('/discussionboard', methods=['POST'])
+# def add_reply():
+# # collecting data from the request object
+#     the_data = request.json
+#     current_app.logger.info(the_data)
+#     #extracting the variable
+#     post_id = the_data['PostID']
+#     employee_id = the_data['EmployeeID']
+#     #time_posted = the_data['TimePosted']
+#     dp_answer = the_data['DiscussionPostAnswer']
+#     # dp_id = the_data['DPAnswerID']
+
+#     # Constructing the query
+#     # query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, TimePosted, DiscussionPostAnswer, DPAnswerID) values ("'
+#     query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer) values ("'
+#     query += post_id + '", "'
+#     # query += employee_id + '", "'
+#     query += employee_id + '", '
+#     query += dp_answer + ')'
+#     current_app.logger.info(query)
+#     # executing and committing the insert statement
+#     cursor = db.get_db().cursor()
+#     cursor.execute(query)
+#     db.get_db().commit()
+#     return 'Discussion Post reply posted!'
+
+
 @Students.route('/discussionboard', methods=['POST'])
 def add_reply():
-# collecting data from the request object
+    # Collecting data from the request object
     the_data = request.json
     current_app.logger.info(the_data)
-    #extracting the variable
+
+    # Extracting variables
     post_id = the_data['PostID']
     employee_id = the_data['EmployeeID']
-    #time_posted = the_data['TimePosted']
     dp_answer = the_data['DiscussionPostAnswer']
-    # dp_id = the_data['DPAnswerID']
+    from datetime import date
+    time_posted = str(date.today())
 
-    # Constructing the query
-    # query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, TimePosted, DiscussionPostAnswer, DPAnswerID) values ("'
-    query = 'insert into DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer) values ("'
-    query += post_id + '", "'
-    # query += employee_id + '", "'
-    query += employee_id + '", '
-    query += dp_answer + ')'
-    current_app.logger.info(query)
-    # executing and committing the insert statement
+    # Constructing a secure query using placeholders
+    query = """
+    INSERT INTO DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer, TimePosted)
+    VALUES (%s, %s, %s, %s)
+    """
+
+    # Parameters to be securely inserted into the query
+    params = (post_id, employee_id, dp_answer, time_posted)
+
+    # Logging the intended operation for debug
+    current_app.logger.info("Executing query: %s with params %s", query, params)
+
+    # Executing and committing the insert statement
     cursor = db.get_db().cursor()
-    cursor.execute(query)
+    cursor.execute(query, params)  # Safe parameter insertion
     db.get_db().commit()
+
     return 'Discussion Post reply posted!'
+
 
 
 ###### STUD ###### 
