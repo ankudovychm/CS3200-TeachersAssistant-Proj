@@ -132,85 +132,10 @@ def parse_http_date(http_date):
     except ValueError as e:
         raise ValueError(f"Invalid date format: {http_date}")
     
-# now i can use put route 
-@Students.route('/Gradesupdate', methods=['PUT'])
-def update_regradeRequests():
-    the_data = request.json
-    current_app.logger.info(the_data)
-    
-    #extracting the variable
-    grade = the_data['Grade']
-    submissionid = the_data['SubmissionID']
-    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
-    data = (grade, submissionid)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    r =cursor.execute(query, data)
-    db.get_db().commit()
-    return 'grade updated!'
-
 ## USER STORY 4 ## POST ON DISUCCION BOARD 
 # get the discussion board post for last route for Alex
 # and then on comments be able to post comment
-@Students.route('/DiscussionBoardContent', methods=['GET'])
-def get_discussion_content():
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM DiscussionPosts')
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
 
-# get route to see all discussion board answers
-@Students.route('/DiscussionBoardAnswers', methods=['GET'])
-def get_discussion_replies():
-    cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM DiscussionPostAnswers')
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
-
-@Students.route('/discussionboard', methods=['POST'])
-def add_reply():
-    # Collecting data from the request object
-    the_data = request.json
-    current_app.logger.info(the_data)
-
-    # Extracting variables
-    post_id = the_data['PostID']
-    employee_id = the_data['EmployeeID']
-    dp_answer = the_data['DiscussionPostAnswer']
-    from datetime import date
-    time_posted = str(date.today())
-
-    # Constructing a query 
-    query = """
-    INSERT INTO DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer, TimePosted)
-    VALUES (%s, %s, %s, %s)
-    """
-    # Parameters to be inserted into the query
-    params = (post_id, employee_id, dp_answer, time_posted)
-
-    # Logging the intended operation for debug
-    current_app.logger.info("Executing query: %s with params %s", query, params)
-
-    # Executing and committing the insert statement
-    cursor = db.get_db().cursor()
-    cursor.execute(query, params)  
-    db.get_db().commit()
-    return 'Success!'
 
 ## USER STORY 4 ## UPDATE GRADES
 # route 4: update grade for submissions 
@@ -442,7 +367,65 @@ def get_customer(ID):
     the_response.mimetype = 'application/json'
     return the_response
 
+@Students.route('/DiscussionBoardContent', methods=['GET'])
+def get_discussion_content():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM DiscussionPosts')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
 
+# get route to see all discussion board answers
+@Students.route('/DiscussionBoardAnswers', methods=['GET'])
+def get_discussion_replies():
+    cursor = db.get_db().cursor()
+    cursor.execute('SELECT * FROM DiscussionPostAnswers')
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
+
+@Students.route('/discussionboard', methods=['POST'])
+def add_reply():
+    # Collecting data from the request object
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    # Extracting variables
+    post_id = the_data['PostID']
+    employee_id = the_data['EmployeeID']
+    dp_answer = the_data['DiscussionPostAnswer']
+    from datetime import date
+    time_posted = str(date.today())
+
+    # Constructing a query 
+    query = """
+    INSERT INTO DiscussionPostAnswers (PostID, EmployeeID, DiscussionPostAnswer, TimePosted)
+    VALUES (%s, %s, %s, %s)
+    """
+    # Parameters to be inserted into the query
+    params = (post_id, employee_id, dp_answer, time_posted)
+
+    # Logging the intended operation for debug
+    current_app.logger.info("Executing query: %s with params %s", query, params)
+
+    # Executing and committing the insert statement
+    cursor = db.get_db().cursor()
+    cursor.execute(query, params)  
+    db.get_db().commit()
+
+    return 'Success!'
 
 
 
