@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS CourseSections(
     CONSTRAINT CS_fk_01
         FOREIGN KEY (CourseID) REFERENCES Courses(CourseID) ON UPDATE CASCADE,
     Year int not null,
-    Semester varchar(10) not null,
+    Semester varchar(10) not null
 );
 
 -- Creates Schedule Table

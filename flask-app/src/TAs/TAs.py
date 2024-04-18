@@ -14,7 +14,7 @@ def get_TAS():
     Gets all TAs name and email 
     """
     cursor = db.get_db().cursor()
-    cursor.execute('select * from Employees NATURAL JOIN EmployeesEmails where EmployeeTitle = "Teaching Assistant"')
+    cursor.execute('select * from Employees NATURAL JOIN EmployeesEmails where EmployeeTitle = "TA"')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -33,7 +33,7 @@ def get_schedule_all():
     Gets schedule of all TAs 
     """
     cursor = db.get_db().cursor()
-    cursor.execute('SELECT * FROM Schedule s JOIN DayTimeWorked dtw ON dtw.ScheduleID = s.ScheduleID JOIN Employees e ON e.EmployeeID = s.EmployeeID WHERE e.EmployeeTitle ="Teaching Assistant"')
+    cursor.execute('SELECT * FROM Schedule s JOIN DayTimeWorked dtw ON dtw.ScheduleID = s.ScheduleID JOIN Employees e ON e.EmployeeID = s.EmployeeID WHERE e.EmployeeTitle ="TA"')
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
