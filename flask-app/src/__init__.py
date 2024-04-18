@@ -30,14 +30,23 @@ def create_app():
     # Example: localhost:8001
     @app.route("/")
     def welcome():
-        return "<h1>Welcome to the 3200 boilerplate app</h1>"
+        return "<h1>Yes we changed the test message...</h1>"
 
     # Import the various Beluprint Objects
+    from src.Discussions.Discussions import Discussions
+    from src.Enrollments.Enrollments import Enrollments
     from src.Students.Students import Students
+    from src.Submissions.Submissions import Submissions
+    from src.TAs.TAs import TAs
+
 
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each
-    app.register_blueprint(Students,   url_prefix='/s')
+    app.register_blueprint(Discussions,   url_prefix='/d')
+    app.register_blueprint(Enrollments,   url_prefix='/e')
+    app.register_blueprint(Students,   url_prefix='/st')
+    app.register_blueprint(Submissions,   url_prefix='/su')
+    app.register_blueprint(TAs,   url_prefix='/t')
 
     # Don't forget to return the app object
     return app
