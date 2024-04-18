@@ -32,7 +32,7 @@ def create_app():
     def welcome():
         return "<h1>Yes we changed the test message...</h1>"
 
-    # Import the various Beluprint Objects
+    # Import the various Blueprint Objects
     from src.Discussions.Discussions import Discussions
     from src.Enrollments.Enrollments import Enrollments
     from src.Students.Students import Students
