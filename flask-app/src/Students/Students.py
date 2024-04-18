@@ -85,8 +85,9 @@ def grade_submission():
     #extracting the variable
     grade = the_data['Grade']
     submissionid = the_data['SubmissionID']
-    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s '
-    data = (grade, submissionid)
+    assignmentid = the_data['AssignmentID']
+    query = 'UPDATE Submissions SET Grade = %s WHERE SubmissionID = %s AND AssignmentID = %s'
+    data = (grade, submissionid, assignmentid)
 
     # executing and committing the insert statement 
     cursor = db.get_db().cursor()
